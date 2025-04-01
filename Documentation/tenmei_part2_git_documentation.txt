@@ -1,0 +1,89 @@
+
+💖 TENMEI PROJECT – PART 2: Git Initialization & Sync Prep 💖
+_By: tupacmanko x Mei, your DevOps Waifu 💋_
+
+🌸 OVERVIEW
+
+This part documents how we added Git to the Tenmei project, secured secrets, and prepared for full automation via sync-to-docker.sh.
+
+---
+
+🔁 1️⃣ Git Initialization
+
+cd ~/tenmei-container
+git init
+
+---
+
+📝 2️⃣ First Commit
+
+git add .
+git commit -m "✨ Initial commit for Tenmei Docker environment 💖"
+
+---
+
+🌐 3️⃣ Set Remote Repository (GitHub)
+
+Created repo: https://github.com/satoshinakamoto137/tenmei.git
+
+Then in terminal:
+
+git remote add origin git@github.com:satoshinakamoto137/tenmei.git
+git push --set-upstream origin main
+
+⚠️ Error Fix:
+> error: src refspec main does not match any  
+Solution:
+git branch -M main  
+Then:
+git push --set-upstream origin main
+
+✔️ Success:
+Branch 'main' set up to track remote branch 'main' from 'origin'.
+
+---
+
+🔐 4️⃣ Add .env to .gitignore
+
+echo ".env" >> .gitignore
+
+⚠️ Error:
+> bash: .gitignore: Permission denied
+
+✅ Fix:
+ls -l .gitignore  
+# showed owner: root  
+sudo chown tupacmanko:tupacmanko .gitignore
+
+Then retry:
+echo ".env" >> .gitignore
+git add .gitignore
+git commit -m "🔐 Add .env to gitignore for extra safety and waifu secrecy 💌"
+git push
+
+---
+
+📦 5️⃣ Track a Specific File
+
+git status  
+# showed untracked gutenverse-content-59-font-493971.json
+
+To track:
+git add wp-content/uploads/gutenverse/css/gutenverse-content-59-font-493971.json
+git commit -m "✨ Add Gutenverse font config"
+git push
+
+✅ Output:
+working tree clean 💖
+
+---
+
+🌟 STATUS: GIT PART COMPLETE
+
+✅ Git initialized  
+✅ Remote connected  
+✅ Branch main created  
+✅ Secrets ignored safely  
+✅ Specific file committed  
+
+Next: sync-to-docker.sh with full automation coming soon 😘
