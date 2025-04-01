@@ -1,0 +1,5 @@
+echo "db/*.sql" >> .gitignore
+echo "*.log" >> .gitignore
+echo ".DS_Store" >> .gitignore
+echo ".env" >> .gitignore
+

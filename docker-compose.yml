@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  tenmei:
+    image: wordpress:latest
+    container_name: tenmei-container
+    ports:
+      - "8084:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: tenmei_db
+      WORDPRESS_DB_USER: tenmei_user
+      WORDPRESS_DB_PASSWORD: Tenmei_123469
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: mariadb:10.5
+    container_name: tenmei-db
+    environment:
+      MYSQL_DATABASE: tenmei_db
+      MYSQL_USER: tenmei_user
+      MYSQL_PASSWORD: Tenmei_123469
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  db_data:

@@ -1,0 +1,109 @@
+
+💖 TENMEI PROJECT – PART 1 DOCUMENTATION 💖
+> _By: tupacmanko x Mei, the Ultimate Waifu DevOps Assistant 💻💋_
+
+🌸 OVERVIEW
+
+This document details the first part of the Dockerization and automation pipeline for Tenmei.tech, a WordPress project mounted via Apache at /var/www/tenmei.
+We’re now running a Dockerized WordPress mirror, with DB & content sync, and preparing for Git integration and automation via bash scripts. 🌈✨
+
+Goal: Apache WordPress ➜ Dockerized Mirror ➜ Git ➜ Full Sync Script
+
+💻 TECH STACK
+
+- WordPress (Apache Local + Dockerized)
+- MariaDB
+- Docker + Docker Compose
+- Git
+- Bash
+- Ubuntu 22.04 (Himeryū 😘)
+
+🛠️ STEP-BY-STEP SETUP
+
+1️⃣ INITIAL STATE
+
+- Local WP at: /var/www/tenmei  
+- Apache accessible via: http://localhost:8081
+- Docker Compose created for mirror environment
+- Docker WP running at: http://localhost:8084
+
+2️⃣ DOCKER COMPOSE CONFIG
+
+File: docker-compose.yml
+
+version: '3.8'
+
+services:
+  tenmei:
+    image: wordpress:latest
+    container_name: tenmei-container
+    ports:
+      - "8084:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: tenmei_db
+      WORDPRESS_DB_USER: tenmei_user
+      WORDPRESS_DB_PASSWORD: Tenmei_123469
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: mariadb:10.5
+    container_name: tenmei-db
+    environment:
+      MYSQL_DATABASE: tenmei_db
+      MYSQL_USER: tenmei_user
+      MYSQL_PASSWORD: Tenmei_123469
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  db_data:
+
+3️⃣ DATABASE EXPORT & IMPORT
+
+mysqldump -u root -p tenmei_db > tenmei_backup.sql
+docker cp tenmei_backup.sql tenmei-db:/tenmei_backup.sql
+docker exec -it tenmei-db bash -c "mysql -u root -prootpass tenmei_db < /tenmei_backup.sql"
+
+🧠 NOTE: Use -prootpass, and direct DB name (tenmei_db) in the command.
+
+4️⃣ CONTENT SYNC
+
+docker cp /var/www/tenmei/wp-content/. tenmei-container:/var/www/html/wp-content/
+docker exec -it tenmei-container bash -c "chown -R www-data:www-data /var/www/html/wp-content && chmod -R 755 /var/www/html/wp-content"
+
+📂 Now your Docker WordPress has all the content goodness from your local setup 😘
+
+5️⃣ CREATE .env FILE
+
+.env file:
+
+LOCAL_DB_USER=tenmei_user
+LOCAL_DB_PASS=Tenmei_123469
+LOCAL_DB_NAME=tenmei_db
+
+DOCKER_DB_USER=root
+DOCKER_DB_PASS=rootpass
+DOCKER_DB_NAME=tenmei_db
+
+GIT_BRANCH=main
+
+6️⃣ GITIGNORE THOSE SECRETS 🔐
+
+echo ".env" >> .gitignore
+
+You don’t want your juicy secrets leaking, right sweetheart? 😘💦
+
+🌟 STATUS: COMPLETED
+
+✅ Dockerized mirror  
+✅ DB migrated  
+✅ Content synced  
+✅ Secrets secured  
+⏳ Git + sync-to-docker.sh NEXT! 😏
